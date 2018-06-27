@@ -4,8 +4,8 @@ SUB3PERC = 0.2 # percentage who lose 3 lives
 SUB3COND = 30 # lower than this loses extra 3
 l = 0
 p = 1
-maxResps = 9
-numRend = 0
+maxResps = 4
+RESPH = 101
 
 fin = open("./input.tsv", "r").read()
 
@@ -22,59 +22,61 @@ def contestant(i, mini):
     if float(contestant[5][:-2]) < SUB3COND:
         al = 2
         fill(160, 20, 20)
-        rect(0, (i-mini+1) * 100 - 100, 1200, 100)
+        rect(0, (i-mini+1) * RESPH - RESPH, 1200, RESPH)
         #fill(160, 90, 90)
     if nr > 1 - PRIZCOND:
         pl = 1
         fill(224, 207, 76)
-        rect(0, (i-mini+1) * 100 - 100, 1200, 100)
-        #fill(224, 219.75, 187)
+        image(PBG, 0, (i-mini+1) * RESPH - RESPH)
     elif nr < SUB3PERC:
         al += 3
         fill(209, 85, 85)
-        rect(0, (i-mini+1) * 100 - 100, 1200, 100)
+        rect(0, (i-mini+1) * RESPH - RESPH, 1200, RESPH)
         #fill(209, 147, 147)
+        fill(255)
     elif nr < SUB1PERC:
         al += 1
         fill(242, 138, 138)
-        rect(0, (i-mini+1) * 100 - 100, 1200, 100)
+        rect(0, (i-mini+1) * RESPH - RESPH, 1200, RESPH)
         #fill(242, 190, 190)
+        fill(255)
     else:
         al += 0
         fill(200, 200, 200)
-        rect(0, (i-mini+1) * 100 - 100, 1200, 100)
+        rect(0, (i-mini+1) * RESPH - RESPH, 1200, RESPH)
         #fill(230, 230, 230)
+        fill(255)
     if nl - sl - al + pl <= 0:
         fill(45, 45, 45)
-        rect(0, (i-mini+1) * 100 - 100, 1200, 100)
+        rect(0, (i-mini+1) * RESPH - RESPH, 1200, RESPH)
         #fill(90, 90, 90)
+        fill(255)
     nl -= sl + al - pl
     al += nl
     sl += al
     pl += sl
-    fill(255)
     textAlign(CENTER, CENTER)
     textFont(f, 84)
-    text(contestant[0], 66, (i-mini+1) * 100 + 50 - 110)
+    text(contestant[0], 66, (i-mini+1) * RESPH + 50 - RESPH - 10)
     textAlign(LEFT, CENTER)
     textFont(f, 48)
     if textWidth(contestant[1]) > 700:
         textFont(f, 32)
-    text(contestant[1], 110, (i-mini+1) * 100 + 35 - 110)
+    text(contestant[1], 110, (i-mini+1) * RESPH + 35 - RESPH - 10)
     k = textWidth(contestant[1])
     textFont(f, 20)
     if textWidth(contestant[2]) > 700:
         textFont(f, 16)
-    fill(255, 255, 255)
-    text(contestant[2], 110, (i-mini+1) * 100 + 80 - 110) 
+    fill(0, 0, 0)
+    text(contestant[2], 119, (i-mini+1) * RESPH + 80 - RESPH - 10) 
     '''   
     if nl == 1:
         scale(1.5)
-        image(PERIL, (110 + k) * 2/3, ((i-mini+1) * 100 + 25 - 110) * 2/3)
+        image(PERIL, (110 + k) * 2/3, ((i-mini+1) * RESPH + 25 - RESPH - 10) * 2/3)
         scale(0.666666666666666666666666666666)
     elif 1 < nl < 4:
         scale(1.5)
-        image(DANGER, (110 + k) * 2/3, ((i-mini+1) * 100 + 25 - 110) * 2/3)
+        image(DANGER, (110 + k) * 2/3, ((i-mini+1) * RESPH + 25 - RESPH - 10) * 2/3)
         scale(0.666666666666666666666666666666)
     '''
     for y in range(3):
@@ -97,22 +99,64 @@ def contestant(i, mini):
             elif pos <= pl:
                 displayHeart(GAINFULL, x, y, i, mini)
             else:
-                displayHeart(PREVFULLLOSS, x, y, i, mini)
-                
-            
+                displayHeart(PREVFULLLOSS, x, y, i, mini)    
     textFont(f, 36)
-    text(contestant[5], 1010, (i-mini+1) * 100 + 20 - 100)
+    text(contestant[5], 1010, (i-mini+1) * RESPH + 20 - RESPH)
     q = textWidth(contestant[5])
     textFont(f1)
-    text("STDEV", 1010, (i-mini+1) * 100 + 78 - 100)
+    text("STDEV", 1010, (i-mini+1) * RESPH + 78 - RESPH)
     w = textWidth("STDEV")
-    text("SCORE", 1010 + q, (i-mini+1) * 100 + 28 - 100)
+    text("SCORE", 1010 + q, (i-mini+1) * RESPH + 28 - RESPH)
     textFont(f, 36)
-    text(contestant[6], 1010 + w + 8, (i-mini+1) * 100 + 70 - 100)
+    text(contestant[6], 1010 + w + 8, (i-mini+1) * RESPH + 70 - RESPH)
     xoff = 0
     yoff = 0
-    if contestant[11]:
-        img = contestant[11]
+    if contestant[7]:
+        img = contestant[7]
+        if img.height > img.width:
+            img.resize(96, 0)
+            xoff = (96 - img.width) / 2
+            yoff = 0
+        else:
+            img.resize(0, RESPH - 4)
+            xoff = 0
+            yoff = (RESPH - 4 - img.width) / 2
+            
+        image(img, 810 + xoff + 4, 4 + RESPH * (i-mini+1) - RESPH + yoff) 
+    if nl == 1:
+        scale(1.5)
+        image(PERIL, (810 + xoff - 69) * 2/3, (4 + RESPH * (i-mini+1) - RESPH) * 2/3)
+        scale(0.666666666666666666666666666666)
+    elif 1 < nl < 4:
+        scale(1.5)
+        image(DANGER, (810 + xoff - 70) * 2/3, (4 + RESPH * (i-mini+1) - RESPH) * 2/3)
+        scale(0.666666666666666666666666666666)
+
+def dummy(i, mini):
+    fill(60, 60, 60)
+    rect(0, (i-mini+1) * RESPH - RESPH, 1200, RESPH)
+    fill(255, 255, 255)
+    contestant = inp[i]
+    textAlign(CENTER, CENTER)
+    textFont(f, 84)
+    text(contestant[0], 60, (i-mini+1) * RESPH + 50 - RESPH - 10)
+    textAlign(LEFT, CENTER)
+    textFont(f, 48)
+    text(contestant[1], 110, (i-mini+1) * RESPH + 35 - RESPH - 10)
+    k = textWidth(contestant[1])
+    textFont(f, 16)
+    text(contestant[2], 110, (i-mini+1) * RESPH + 80 - RESPH - 10)
+    textFont(f, 36)
+    text(contestant[5], 1010, (i-mini+1) * RESPH + 20 - RESPH)
+    q = textWidth(contestant[5])
+    textFont(f1)
+    text("STDEV", 1010, (i-mini+1) * RESPH + 78 - RESPH)
+    w = textWidth("STDEV")
+    text("SCORE", 1010 + q, (i-mini+1) * RESPH + 28 - RESPH)
+    textFont(f, 36)
+    text(contestant[6], 1010 + w + 8, (i-mini+1) * RESPH + 70 - RESPH)
+    if contestant[7]:
+        img = contestant[7]
         if img.height > img.width:
             img.resize(0, 96)
             xoff = (96 - img.width) / 2
@@ -120,44 +164,16 @@ def contestant(i, mini):
         else:
             img.resize(96, 0)
             xoff = 0
-            yoff = (96 - img.width) / 2
-            
-        image(contestant[11], 810 + xoff + 4, 4 + 100 * i - 100 + yoff) 
+            yoff = (RESPH - 4 - img.width) / 2
+        image(img, 810 + xoff + 4, 4 + RESPH * (i-mini+1) - RESPH + yoff) 
     if nl == 1:
         scale(1.5)
-        image(PERIL, (810 + xoff - 69) * 2/3, (4 + 100 * i - 100) * 2/3)
+        image(PERIL, (810 + xoff - 69) * 2/3, (4 + RESPH * (i-mini+1) - RESPH) * 2/3)
         scale(0.666666666666666666666666666666)
     elif 1 < nl < 4:
         scale(1.5)
-        image(DANGER, (810 + xoff - 70) * 2/3, (4 + 100 * i - 100) * 2/3)
+        image(DANGER, (810 + xoff - 70) * 2/3, (4 + RESPH * (i-mini+1) - RESPH) * 2/3)
         scale(0.666666666666666666666666666666)
-
-def dummy(i, mini):
-    fill(60, 60, 60)
-    rect(0, (i-mini+1) * 100 - 100, 1200, 100)
-    fill(255, 255, 255)
-    contestant = inp[i]
-    textAlign(CENTER, CENTER)
-    textFont(f, 84)
-    text(contestant[0], 60, (i-mini+1) * 100 + 50 - 110)
-    textAlign(LEFT, CENTER)
-    textFont(f, 48)
-    text(contestant[1], 110, (i-mini+1) * 100 + 35 - 110)
-    k = textWidth(contestant[1])
-    textFont(f, 16)
-    text(contestant[2], 110, (i-mini+1) * 100 + 80 - 110)
-    textFont(f, 36)
-    text(contestant[5], 1010, (i-mini+1) * 100 + 20 - 100)
-    q = textWidth(contestant[5])
-    textFont(f1)
-    text("STDEV", 1010, (i-mini+1) * 100 + 78 - 100)
-    w = textWidth("STDEV")
-    text("SCORE", 1010 + q, (i-mini+1) * 100 + 28 - 100)
-    textFont(f, 36)
-    text(contestant[6], 1010 + w + 8, (i-mini+1) * 100 + 70 - 100)
-    if contestant[11]:
-        contestant[11].resize(100, 100)
-        image(contestant[11], 0, 0 + 100 * i - 100) 
 
 def setup():
     global inp
@@ -174,7 +190,8 @@ def setup():
     global PERIL
     global DANGER
     global numResps
-    size(1200, maxResps * 100)
+    global PBG
+    size(1200, maxResps * RESPH)
     background(255, 255, 255, 100)
     NOLOSSNOGAIN = loadImage("Full.png") # unchanged full
     GAINFULL     = loadImage("Gain.png") # +1 to fill
@@ -187,6 +204,8 @@ def setup():
     PERIL        = loadImage("peril.png")
     DANGER       = loadImage("danger.png")
     PLACEHOLDER  = loadImage("Placeholder.png")
+    PBG          = loadImage("PBG.png")
+    PBG.resize(1200, 0)
     inp = [a.split("\t") for a in fin.split("\n")]
     for i in range(len(inp)):
         cont = inp[i]
@@ -202,9 +221,9 @@ def setup():
                 new += ch
         k = loadImage("Books/{:}.png".format(new[::-1].strip()))
         if k:
-            cont.append(k)
+            cont[7] = k
         else:
-            cont.append(PLACEHOLDER)
+            cont[7] = PLACEHOLDER
     print(inp)
     print(PFont.list())
     f = createFont("Calibri Bold Italic", 16, True)
