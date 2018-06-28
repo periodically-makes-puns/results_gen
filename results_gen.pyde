@@ -10,7 +10,7 @@ RESPH = 101
 fin = open("./input.tsv", "r").read()
 
 def displayHeart(imge, x, y, i, mini):
-    image(imge, 910 + 30 * x + 5 - 4 * y, 5 + (i-mini+1) * 100 + 30 * y - 100) 
+    image(imge, 910 + 30 * x + 8 - 4 * y, 5 + (i-mini+1) * 100 + 30 * y - 100) 
 
 def contestant(i, mini):
     contestant = inp[i]
@@ -19,7 +19,8 @@ def contestant(i, mini):
     pl = 0
     sl = int(contestant[4]) # spell loss
     al = 0
-    if float(contestant[5][:-2]) < SUB3COND:
+    boost = float(contestant[7][:-2])
+    if float(contestant[5][:-2]) + boost < SUB3COND:
         al = 2
         fill(160, 20, 20)
         rect(0, (i-mini+1) * RESPH - RESPH, 1200, RESPH)
@@ -57,18 +58,20 @@ def contestant(i, mini):
     pl += sl
     textAlign(CENTER, CENTER)
     textFont(f, 84)
-    text(contestant[0], 66, (i-mini+1) * RESPH + 50 - RESPH - 10)
+    text(contestant[0], 60-4, (i-mini+1) * RESPH + 50 - RESPH - 10)
     textAlign(LEFT, CENTER)
     textFont(f, 48)
     if textWidth(contestant[1]) > 700:
         textFont(f, 32)
-    text(contestant[1], 110, (i-mini+1) * RESPH + 35 - RESPH - 10)
+    text(contestant[1], 110, (i-mini+1) * RESPH + 32 - RESPH - 10)
     k = textWidth(contestant[1])
     textFont(f, 20)
     if textWidth(contestant[2]) > 700:
         textFont(f, 16)
     fill(0, 0, 0)
     text(contestant[2], 119, (i-mini+1) * RESPH + 80 - RESPH - 10) 
+    
+        
     '''   
     if nl == 1:
         scale(1.5)
@@ -106,30 +109,34 @@ def contestant(i, mini):
     textFont(f1)
     text("STDEV", 1010, (i-mini+1) * RESPH + 78 - RESPH)
     w = textWidth("STDEV")
-    text("SCORE", 1010 + q, (i-mini+1) * RESPH + 28 - RESPH)
+    text("SCORE", 1010 + q + 5, (i-mini+1) * RESPH + 28 - RESPH)
     textFont(f, 36)
-    text(contestant[6], 1010 + w + 8, (i-mini+1) * RESPH + 70 - RESPH)
+    text(contestant[6], 1010 + w + 5, (i-mini+1) * RESPH + 70 - RESPH)
+    textFont(f, 16)
+    if boost:
+        text("{:+.2f}%".format(boost), 1010 + q - 2, (i-mini+1) * RESPH + 12 - RESPH)
+        
     xoff = 0
     yoff = 0
-    if contestant[7]:
-        img = contestant[7]
+    if contestant[8]:
+        img = contestant[8]
         if img.height > img.width:
-            img.resize(96, 0)
-            xoff = (96 - img.width) / 2
+            img.resize(0, RESPH - 10)
+            xoff = (RESPH - 4 - img.width) / 2
             yoff = 0
         else:
-            img.resize(0, RESPH - 4)
+            img.resize(RESPH - 10, 0)
             xoff = 0
             yoff = (RESPH - 4 - img.width) / 2
             
-        image(img, 810 + xoff + 4, 4 + RESPH * (i-mini+1) - RESPH + yoff) 
+        image(img, 810 + xoff + 8, 2 + RESPH * (i-mini+1) - RESPH + yoff) 
     if nl == 1:
         scale(1.5)
-        image(PERIL, (810 + xoff - 69) * 2/3, (4 + RESPH * (i-mini+1) - RESPH) * 2/3)
+        image(PERIL, (810 + xoff - 55) * 2/3, (4 + RESPH * (i-mini+1) - RESPH) * 2/3)
         scale(0.666666666666666666666666666666)
     elif 1 < nl < 4:
         scale(1.5)
-        image(DANGER, (810 + xoff - 70) * 2/3, (4 + RESPH * (i-mini+1) - RESPH) * 2/3)
+        image(DANGER, (810 + xoff - 60) * 2/3, (4 + RESPH * (i-mini+1) - RESPH) * 2/3)
         scale(0.666666666666666666666666666666)
 
 def dummy(i, mini):
@@ -155,8 +162,8 @@ def dummy(i, mini):
     text("SCORE", 1010 + q, (i-mini+1) * RESPH + 28 - RESPH)
     textFont(f, 36)
     text(contestant[6], 1010 + w + 8, (i-mini+1) * RESPH + 70 - RESPH)
-    if contestant[7]:
-        img = contestant[7]
+    if contestant[8]:
+        img = contestant[8]
         if img.height > img.width:
             img.resize(0, 96)
             xoff = (96 - img.width) / 2
@@ -207,8 +214,11 @@ def setup():
     PBG          = loadImage("PBG.png")
     PBG.resize(1200, 0)
     inp = [a.split("\t") for a in fin.split("\n")]
+    print(PFont.list())
     for i in range(len(inp)):
         cont = inp[i]
+        while (len(cont) <= 8):
+            cont.append(0)
         new = ""
         throw = False
         arg = "",
@@ -221,12 +231,10 @@ def setup():
                 new += ch
         k = loadImage("Books/{:}.png".format(new[::-1].strip()))
         if k:
-            cont[7] = k
+            cont[8] = k
         else:
-            cont[7] = PLACEHOLDER
-    print(inp)
-    print(PFont.list())
-    f = createFont("Calibri Bold Italic", 16, True)
+            cont[8] = PLACEHOLDER
+    f = createFont("Agency FB Bold", 16, True)
     f1 = createFont("Segoe UI Bold", 16, True)
     fbc = createFont("Segoe UI Symbol", 16, True)
 
@@ -256,14 +264,14 @@ def draw():
 def keyTyped():
     global l
     global p
-    if key == "w" or key == UP:
+    if key == "s" or key == DOWN:
         if l < len(inp) - 1:
             l += 1
             print(l)
     if key == "e":
         save("{:d}.png".format(p))
         p += 1
-    if key == "s" or key == DOWN:
+    if key == "w" or key == UP:
         if l > 0:
             l -= 1
             print(l)
