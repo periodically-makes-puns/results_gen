@@ -1,10 +1,10 @@
 PRIZCOND = 0.1 # percentage who prize
-SUB1PERC = 0.5 # percentage who lose one life
-SUB3PERC = 0.2 # percentage who lose 3 lives
-SUB3COND = 30 # lower than this loses extra 3
+SUB1PERC = 0.7 # percentage who lose one life
+SUB3PERC = 0.5 # percentage who lose 3 lives
+SUB3COND = 20 # lower than this loses extra 3
 l = 0
 p = 1
-maxResps = 5
+maxResps = 6
 RESPH = 101
 mini = 0
 maxi = 0
@@ -15,7 +15,7 @@ def displayHeart(imge, x, y, i, mini):
 
 def contestant(i, mini):
     contestant = inp[i]
-    nr = float((len(filter(lambda a: a[0] != "-", inp)) - float(contestant[0]) - 1)) / float((len(filter(lambda a: a[0] != "-", inp)) - 2))
+    nr = float((len(filter(lambda a: a[0] != "-", inp)) - float(contestant[0]))) / float((len(filter(lambda a: a[0] != "-", inp)) - 1))
     nl = float(contestant[3]) # original lives
     pl = 0
     sl = int(contestant[4]) # spell loss
@@ -42,18 +42,13 @@ def contestant(i, mini):
     BOOSTX = 0
     BOOSTY = 0
     BOOSTF = 16
-    if float(contestant[5][:-2]) + boost < SUB3COND:
-        al = 2
-        fill(160, 20, 20)
-        rect(0, (i-mini+1) * RESPH - RESPH, 1200, RESPH)
-        #fill(160, 90, 90)
     if nr > 1 - PRIZCOND:
         u = prize
         pl = 1
         fill(224, 207, 76)
         image(PBG, 0, (i-mini+1) * RESPH - RESPH)
-        RANKX = 0
-        RANKY = -3
+        RANKX = -2
+        RANKY = -5
         RANKF = 84
         NAMEX = 0
         NAMEY = 0
@@ -75,7 +70,9 @@ def contestant(i, mini):
     elif nr < SUB3PERC:
         al += 3
         fill(209, 85, 85)
-        rect(0, (i-mini+1) * RESPH - RESPH, 1200, RESPH)
+        tint(239, 182, 182)
+        image(DLBG, 0, (i-mini+1) * RESPH - RESPH)
+        noTint()
         #fill(209, 147, 147)
         fill(255)
         RANKX = -2
@@ -88,10 +85,10 @@ def contestant(i, mini):
         RESPY = 0
         RESPF = 20
         SHIFTY = 0
-        SHIFTX = 13
+        SHIFTX = 16
         SHIFTY = 0
         SCOREF = 24
-        STDEVX = 20
+        STDEVX = 17
         STDEVY = -2
         STDEVF = 24
         BOOSTX = 40
@@ -100,7 +97,9 @@ def contestant(i, mini):
     elif nr < SUB1PERC:
         al += 1
         fill(242, 138, 138)
-        rect(0, (i-mini+1) * RESPH - RESPH, 1200, RESPH)
+        tint(237, 206, 206)
+        image(LBG, 0, (i-mini+1) * RESPH - RESPH)
+        noTint()
         #fill(242, 190, 190)
         fill(255)
         RANKX = -2
@@ -113,10 +112,10 @@ def contestant(i, mini):
         RESPY = 0
         RESPF = 20
         SHIFTY = 0
-        SHIFTX = 13
+        SHIFTX = 16
         SHIFTY = 0
         SCOREF = 24
-        STDEVX = 20
+        STDEVX = 17
         STDEVY = -2
         STDEVF = 24
         BOOSTX = 40
@@ -128,8 +127,8 @@ def contestant(i, mini):
         image(SBG, 0, (i-mini+1) * RESPH - RESPH)
         #fill(230, 230, 230)
         fill(255)
-        RANKX = -2
-        RANKY = -6
+        RANKX = -4
+        RANKY = -8
         RANKF = 84
         NAMEX = 0
         NAMEY = 2
@@ -138,51 +137,67 @@ def contestant(i, mini):
         RESPY = 0
         RESPF = 20
         SHIFTY = 0
-        SHIFTX = 13
+        SHIFTX = 16
         SHIFTY = 0
         SCOREF = 24
-        STDEVX = 20
+        STDEVX = 17
         STDEVY = -2
         STDEVF = 24
         BOOSTX = 40
         BOOSTY = 11
         BOOSTF = 16
+    if float(contestant[5][:-2]) + boost < SUB3COND:
+        al += 3
+        fill(160, 20, 20)
+        tint(214, 167, 167)
+        image(TLBG, 0, (i-mini+1) * RESPH - RESPH)
+        noTint()
+        fill(255)
+        if SUB3PERC <= nr < SUB1PERC:
+            fill(255)
+            rect(0, (i-mini+1) * RESPH - RESPH, 1200, RESPH)
+            textAlign(CENTER, CENTER)
+            fill(0)
+            textFont(a, 24)
+            text(u"￣\_(ツ)_/￣", 600, (i-mini+1) * RESPH - RESPH / 2)
+            u = jok
+        #fill(160, 90, 90)
+    if (float(contestant[5][:-2]) + boost < SUB3COND) and (SUB3PERC <= nr < SUB1PERC) and (nl - sl - al + pl > 0):
+        fill(0)
     if nl - sl - al + pl <= 0:
         fill(45, 45, 45)
-        rect(0, (i-mini+1) * RESPH - RESPH, 1200, RESPH)
+        image(DBG, 0, (i-mini+1) * RESPH - RESPH)
         #fill(90, 90, 90)
         fill(255)
         u = dead
-        RANKX = -2
+        RANKX = -4
         RANKY = 10
         RANKF = 84
-        NAMEX = 0
-        NAMEY = 12
+        NAMEX = 8
+        NAMEY = 8
         NAMEF = 48
-        RESPX = 0
+        RESPX = 5
         RESPY = 0
         RESPF = 20
-        SHIFTX = 8
-        SHIFTY = 10
+        SHIFTX = 17
+        SHIFTY = 5
         SCOREF = 24
-        STDEVX = 22
-        STDEVY = 3
+        STDEVX = 18
+        STDEVY = 7
         STDEVF = 24
-        BOOSTX = 36
-        BOOSTY = 20
+        BOOSTX = 40
+        BOOSTY = 11
         BOOSTF = 16
     nl -= sl + al - pl
     al += nl
     sl += al
     pl += sl
-    
     textAlign(CENTER, CENTER)
     textFont(u, RANKF)
     text(contestant[0], 60+RANKX, (i-mini+1) * RESPH + 50 + RANKY - RESPH - 10)
     textAlign(LEFT, CENTER)
     textFont(u, NAMEF)
     offset = 0
-    
     if textWidth(contestant[1]) > 650:
         textFont(u, NAMEF * 2 / 3)
         offset = 6
@@ -204,6 +219,8 @@ def contestant(i, mini):
         scale(0.666666666666666666666666666666)
     '''
     fill(255)
+    if float(contestant[5][:-2]) + boost < SUB3COND and SUB3PERC <= nr < SUB1PERC and nl > 0:
+        fill(0)
     ad = 0
     for y in range(3):
         for x in range(3):
@@ -228,10 +245,12 @@ def contestant(i, mini):
                 displayHeart(GAINFULL, x, y, i, mini)
             else:
                 displayHeart(PREVFULLLOSS, x, y, i, mini)    
-    if nl - sl - al + pl <= 0:
-        fill(255)
-    if nr >= SUB1PERC and nr < (1-PRIZCOND):
+    if nl <= 0:
+        fill(0)
+    if nl > 0 and nr < (1-PRIZCOND):
         u = f1
+    if float(contestant[5][:-2]) + boost < SUB3COND and SUB3PERC <= nr < SUB1PERC:
+        u = jok
     textFont(u, SCOREF)
     if boost:
         text(contestant[5], 1025 + SHIFTX, (i-mini+1) * RESPH + 20 - RESPH + SHIFTY)
@@ -259,6 +278,8 @@ def contestant(i, mini):
             xoff = 0
             yoff = (RESPH - 4 - img.height) / 2
         image(img, 810 + xoff + 6, 2 + RESPH * (i-mini+1) - RESPH + yoff) 
+    if nl <= 0:
+        image(spiral, 810 + 6, 2 + RESPH * (i-mini+1) - RESPH) 
     if nl == 1:
         scale(1.5)
         image(PERIL, (810 + xoff - 55) * 2/3, (4 + RESPH * (i-mini+1) - RESPH) * 2/3)
@@ -321,13 +342,14 @@ def sortFunc(a):
     return (AVG, STV)
 
 
-
 def setup():
     global inp
     global f
+    global a
     global dead
     global prize
     global f1
+    global jok
     global NOLOSSNOGAIN
     global GAINFULL
     global HALFLOSS
@@ -341,6 +363,11 @@ def setup():
     global numResps
     global PBG
     global SBG
+    global LBG
+    global DLBG
+    global TLBG
+    global DBG
+    global spiral
     size(1200, maxResps * RESPH)
     frameRate(12)
     background(255,255,255,255)
@@ -357,7 +384,11 @@ def setup():
     PLACEHOLDER  = loadImage("Placeholder.png")
     PBG          = loadImage("PBG.png")
     SBG          = loadImage("SBG.png")
-    PBG.resize(1200, 0)
+    LBG          = loadImage("LBG.png")
+    DLBG         = loadImage("DLBG.png")
+    TLBG         = loadImage("TLBG.png")
+    DBG          = loadImage("DBG.png")
+    spiral       = loadImage("spiral.png")
     inp = [a.split("\t") for a in fin.split("\n")]
     del inp[0]
     print(PFont.list())
@@ -392,6 +423,8 @@ def setup():
     dead = createFont("Special Elite", 16, True)
     f1 = createFont("Alegreya Bold", 16, True)
     fbc = createFont("Segoe UI Symbol", 16, True)
+    a = loadFont("Code2000-48.vlw")
+    jok = createFont("Comic Sans MS Bold", 16, True)
 
 def draw():
     global l
@@ -438,15 +471,11 @@ def keyTyped():
     if key == "d":
         l = min(l + maxResps, len(inp))
         print(l)
-        if l == len(inp):
-            maxResps = l - maxi
-            this.surface.setSize(1200, maxResps * 101)
     if key == "a":
         l = max(l - maxResps, 0)
         print(l)
     if "1" <= key and "9" >= key:
         l = min(l - maxResps + int(key), len(inp))
-            
         maxResps = int(key)
         this.surface.setSize(1200, maxResps * 101)
     mini = max(l - maxResps + 0, 0)
